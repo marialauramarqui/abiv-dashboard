@@ -163,8 +163,8 @@
   <!-- Treemap + Concentração -->
   <section class="row3">
     <div class="card">
-      <h2 id="treemap-title">Treemap de estados</h2>
-      <p class="desc">Cada retângulo é proporcional ao volume de revendedores. <strong>Clique</strong> para filtrar.</p>
+      <h2 id="treemap-title">Participação de cada estado</h2>
+      <p class="desc" id="treemap-desc">Cada retângulo é um estado — quanto maior, mais revendedores. <strong>Clique</strong> em um estado para filtrar todo o dashboard.</p>
       <div id="treemap"></div>
     </div>
     <div class="card">
@@ -504,55 +504,74 @@ function renderTreemap(){
       items.push({key:"__outros__", label:"Outros", nome:`Outros (${small.length} estados)`, revendedores:d3.sum(small,s=>s.revendedores), municipios:d3.sum(small,s=>s.municipios), kind:"state-group", small});
     }
     totalRef = total;
-    title = "Treemap de estados";
+    title = "Participação de cada estado";
   }
   document.getElementById("treemap-title").textContent = title;
+  const descEl = document.getElementById("treemap-desc");
+  if(descEl){
+    descEl.innerHTML = uf
+      ? `Cada retângulo é um município de ${uf} — quanto maior, mais revendedores. <strong>Clique</strong> em um município para filtrar.`
+      : `Cada retângulo é um estado — quanto maior, mais revendedores. <strong>Clique</strong> em um estado para filtrar todo o dashboard.`;
+  }
 
   const root = d3.hierarchy({children:items}).sum(d=>d.revendedores).sort((a,b)=>b.value-a.value);
   d3.treemap().size([w,h]).padding(2)(root);
   const max = d3.max(items, d=>d.revendedores);
   const color = d3.scaleSequential().domain([0,max]).interpolator(t=>d3.interpolate("#fdeaf2", PINK)(Math.sqrt(t)));
 
-  const g = svg.selectAll("g").data(root.leaves()).join("g")
-    .attr("transform", d=>`translate(${d.x0},${d.y0})`);
-  g.append("rect")
-    .attr("width", d=>d.x1-d.x0).attr("height", d=>d.y1-d.y0)
-    .attr("fill", d=>color(d.data.revendedores))
-    .attr("stroke","#fff")
-    .on("click",(ev,d)=>{
-      if(d.data.kind==="state") setFilterUF(d.data.key);
-      else if(d.data.kind==="city") setFilterCity(d.data.key, state.filter.uf);
-    })
-    .on("mousemove",(ev,d)=>{
-      const pct = fmtPct(d.data.revendedores/totalRef);
-      let html;
-      if(d.data.kind==="state") html = `<strong>${d.data.nome}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${pct} · ${fmt(d.data.municipios)} municípios</span>`;
-      else if(d.data.kind==="city") html = `<strong>${d.data.label}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${pct} do estado</span>`;
-      else html = `<strong>${d.data.nome}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${pct}</span>`;
-      showTip(html, ev);
-    })
-    .on("mouseleave", hideTip);
+  // Renderização imperativa pra garantir que o click funciona
+  root.leaves().forEach(leaf=>{
+    const d = leaf.data;
+    const cellW = leaf.x1 - leaf.x0;
+    const cellH = leaf.y1 - leaf.y0;
+    const g = document.createElementNS("http://www.w3.org/2000/svg","g");
+    g.setAttribute("transform", `translate(${leaf.x0},${leaf.y0})`);
+    g.style.cursor = "pointer";
 
-  g.append("text")
-    .attr("x",8).attr("y",18)
-    .attr("font-size",13).attr("font-weight",700)
-    .attr("fill", d=>(d.data.revendedores/max>0.35)?"#fff":"#0a0a0a")
-    .attr("pointer-events","none")
-    .text(d=>{
-      const w = d.x1-d.x0;
-      if(w<40) return "";
-      return d.data.label;
+    const rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    rect.setAttribute("width", cellW);
+    rect.setAttribute("height", cellH);
+    rect.setAttribute("fill", color(d.revendedores));
+    rect.setAttribute("stroke", (state.filter.uf===d.key || state.filter.city===d.key) ? "#0a0a0a" : "#fff");
+    rect.setAttribute("stroke-width", (state.filter.uf===d.key || state.filter.city===d.key) ? 2.5 : 1);
+    g.appendChild(rect);
+
+    if(cellW >= 40){
+      const t1 = document.createElementNS("http://www.w3.org/2000/svg","text");
+      t1.setAttribute("x", 8); t1.setAttribute("y", 18);
+      t1.setAttribute("font-size", 13); t1.setAttribute("font-weight", 700);
+      t1.setAttribute("fill", (d.revendedores/max>0.35)?"#fff":"#0a0a0a");
+      t1.setAttribute("pointer-events","none");
+      t1.textContent = d.label;
+      g.appendChild(t1);
+    }
+    if(cellW >= 60){
+      const t2 = document.createElementNS("http://www.w3.org/2000/svg","text");
+      t2.setAttribute("x", 8); t2.setAttribute("y", 34);
+      t2.setAttribute("font-size", 11);
+      t2.setAttribute("fill", (d.revendedores/max>0.35)?"#ffe4ef":"#6b6b6b");
+      t2.setAttribute("pointer-events","none");
+      t2.textContent = fmt(d.revendedores);
+      g.appendChild(t2);
+    }
+
+    g.addEventListener("click", ()=>{
+      if(d.kind==="state") setFilterUF(d.key);
+      else if(d.kind==="city") setFilterCity(d.key, state.filter.uf);
+      // state-group (Outros) não filtra
     });
-  g.append("text")
-    .attr("x",8).attr("y",34)
-    .attr("font-size",11)
-    .attr("fill", d=>(d.data.revendedores/max>0.35)?"#ffe4ef":"#6b6b6b")
-    .attr("pointer-events","none")
-    .text(d=>{
-      const w = d.x1-d.x0;
-      if(w<60) return "";
-      return fmt(d.data.revendedores);
+    g.addEventListener("mousemove", ev=>{
+      const pct = fmtPct(d.revendedores/totalRef);
+      let html;
+      if(d.kind==="state") html = `<strong>${d.nome}</strong><br>${fmt(d.revendedores)} revendedores<br><span class="muted">${pct} · ${fmt(d.municipios)} municípios</span>`;
+      else if(d.kind==="city") html = `<strong>${d.label}</strong><br>${fmt(d.revendedores)} revendedores<br><span class="muted">${pct} do estado</span>`;
+      else html = `<strong>${d.nome}</strong><br>${fmt(d.revendedores)} revendedores<br><span class="muted">${pct}</span>`;
+      showTip(html, ev);
     });
+    g.addEventListener("mouseleave", hideTip);
+
+    svg.node().appendChild(g);
+  });
 }
 
 /* ----- CONCENTRAÇÃO ----- */
