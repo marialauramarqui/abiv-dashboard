@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ABIV — Revendedores por Município (2025)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#e02d7d;
+    --pink-soft:#fdeaf2;
+    --ink:#0a0a0a;
+    --muted:#6b6b6b;
+    --line:#ececec;
+    --bg:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.45}
+  a{color:var(--pink);text-decoration:none}
+  header{padding:28px 32px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+  header h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-0.01em}
+  header .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  header .brand{display:flex;align-items:center;gap:12px}
+  header .dot{width:12px;height:12px;border-radius:3px;background:var(--pink)}
+  main{padding:24px 32px 64px;max-width:1400px;margin:0 auto}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .kpi{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:#fff}
+  .kpi .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
+  .kpi .value{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-0.02em}
+  .kpi .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .kpi.accent{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .kpi.accent .label,.kpi.accent .hint{color:#ffe4ef}
+  .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
+  .card{border:1px solid var(--line);border-radius:12px;padding:20px;background:#fff;min-height:0}
+  .card h2{font-size:14px;font-weight:600;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.04em}
+  .card .desc{font-size:12px;color:var(--muted);margin:0 0 14px}
+  .card .actions{float:right;display:flex;gap:6px}
+  .pill{font-size:11px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink);font-family:inherit;font-weight:500}
+  .pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .pill:hover:not(.active){background:#f5f5f5}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+  .row3{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-top:20px}
+  svg{display:block;width:100%;height:auto;font-family:inherit}
+  .bar-row{display:flex;align-items:center;gap:10px;font-size:13px;margin:6px 0}
+  .bar-row .name{flex:0 0 150px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar-row .uf{color:var(--muted);font-size:11px;margin-left:4px}
+  .bar-row .bar{flex:1;height:18px;background:var(--pink-soft);border-radius:4px;position:relative;overflow:hidden}
+  .bar-row .fill{height:100%;background:var(--pink);border-radius:4px}
+  .bar-row .num{flex:0 0 80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .quality{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  .qcard{border:1px dashed #d9d9d9;border-radius:12px;padding:16px 18px;background:#fafafa}
+  .qcard .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
+  .qcard .value{font-size:22px;font-weight:800;margin-top:4px}
+  .qcard .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:8px}
+  .legend .scale{display:flex;height:8px;border-radius:4px;overflow:hidden;flex:1;max-width:240px}
+  .legend .scale span{flex:1}
+  .tooltip{position:fixed;pointer-events:none;background:#0a0a0a;color:#fff;padding:8px 10px;border-radius:6px;font-size:12px;z-index:10;opacity:0;transition:opacity .12s;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+  .tooltip strong{color:#fff}
+  .tooltip .muted{color:#b5b5b5;font-size:11px}
+  footer{margin-top:48px;padding:20px 32px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center}
+  @media (max-width:980px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid,.row2,.row3,.quality{grid-template-columns:1fr}
+    main{padding:16px}
+    header{padding:20px 16px 12px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="dot"></div>
+    <div>
+      <h1>ABIV — Revendedores Ativos por Município</h1>
+      <div class="sub">Associação Brasileira da Indústria do Vestuário · Base 2025 (Tailor Jan–Dez)</div>
+    </div>
+  </div>
+  <div class="sub">Atualizado em <span id="updated">—</span></div>
+</header>
+
+<main>
+  <!-- KPIs -->
+  <section class="kpis">
+    <div class="kpi accent">
+      <div class="label">Revendedores ativos</div>
+      <div class="value" id="kpi-total">—</div>
+      <div class="hint">Clientes únicos (CPF/CNPJ)</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Capilaridade</div>
+      <div class="value" id="kpi-cap">—</div>
+      <div class="hint">Municípios com ≥ 1 revendedor</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Estados cobertos</div>
+      <div class="value" id="kpi-uf">—</div>
+      <div class="hint">UFs do Brasil com presença</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Média por município</div>
+      <div class="value" id="kpi-avg">—</div>
+      <div class="hint">Ticket de presença</div>
+    </div>
+  </section>
+
+  <!-- Mapa + Top 10 -->
+  <section class="grid">
+    <div class="card">
+      <h2>Mapa do Brasil</h2>
+      <p class="desc">Densidade de revendedores por estado. Passe o mouse para ver detalhes.</p>
+      <div id="map"></div>
+      <div class="legend">
+        <span>menos</span>
+        <div class="scale" id="legend-scale"></div>
+        <span>mais</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="actions">
+        <button class="pill active" data-mode="all">Todas</button>
+        <button class="pill" data-mode="capital">Capitais</button>
+        <button class="pill" data-mode="interior">Interior</button>
+      </div>
+      <h2>Top 10 cidades</h2>
+      <p class="desc">Ranking por número de revendedores únicos.</p>
+      <div id="top10"></div>
+    </div>
+  </section>
+
+  <!-- Treemap + Pareto -->
+  <section class="row3">
+    <div class="card">
+      <h2>Treemap de estados</h2>
+      <p class="desc">Cada retângulo é proporcional ao volume de revendedores do estado.</p>
+      <div id="treemap"></div>
+    </div>
+    <div class="card">
+      <h2>Pareto · 80/20</h2>
+      <p class="desc">Curva acumulada de cidades ordenadas por volume.</p>
+      <div id="pareto"></div>
+      <div class="desc" id="pareto-insight" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <!-- Qualidade de dados -->
+  <section class="card" style="margin-top:20px">
+    <h2>Qualidade de dados</h2>
+    <p class="desc">Clientes que ficam fora do ranking de cidades por terem cadastro incompleto ou serem do exterior. Precisam de atualização cadastral.</p>
+    <div class="quality">
+      <div class="qcard">
+        <div class="label">Sem cidade cadastrada</div>
+        <div class="value" id="q-sem">—</div>
+        <div class="hint" id="q-sem-hint">—</div>
+      </div>
+      <div class="qcard">
+        <div class="label">Exterior</div>
+        <div class="value" id="q-ex">—</div>
+        <div class="hint" id="q-ex-hint">—</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="tooltip" id="tt"></div>
+<footer>
+  Dashboard ABIV · dados Tailor 2025 · cores institucionais #e02d7d, preto, branco
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script>
+const PINK = "#e02d7d";
+const fmt = n => n.toLocaleString("pt-BR");
+const fmtPct = n => (n*100).toFixed(1).replace(".",",")+"%";
+
+const tt = document.getElementById("tt");
+function showTip(html, ev){
+  tt.innerHTML = html;
+  tt.style.opacity = 1;
+  const pad = 12;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  // mantém na tela
+  requestAnimationFrame(()=>{
+    const r = tt.getBoundingClientRect();
+    if(x + r.width > window.innerWidth) x = ev.clientX - r.width - pad;
+    if(y + r.height > window.innerHeight) y = ev.clientY - r.height - pad;
+    tt.style.left = x+"px"; tt.style.top = y+"px";
+  });
+}
+function hideTip(){ tt.style.opacity = 0; }
+
+Promise.all([
+  fetch("data.json").then(r=>r.json()),
+  fetch("brazil-states.geojson").then(r=>r.json()),
+]).then(([data, geo])=>{
+  document.getElementById("updated").textContent = data.geradoEm;
+
+  // KPIs
+  document.getElementById("kpi-total").textContent = fmt(data.totais.validos);
+  document.getElementById("kpi-cap").textContent = fmt(data.totais.municipios);
+  document.getElementById("kpi-uf").textContent = data.totais.estados;
+  document.getElementById("kpi-avg").textContent = fmt(Math.round(data.totais.validos / data.totais.municipios));
+
+  // Qualidade
+  document.getElementById("q-sem").textContent = fmt(data.totais.semCidade);
+  document.getElementById("q-sem-hint").textContent = `${data.semCidade.length} registro(s) sem município informado`;
+  document.getElementById("q-ex").textContent = fmt(data.totais.exterior);
+  document.getElementById("q-ex-hint").textContent = `${data.exterior.length} localidade(s) fora do Brasil (${[...new Set(data.exterior.map(e=>e.estado||"--"))].join(", ")})`;
+
+  drawMap(data, geo);
+  drawTop10(data, "all");
+  drawTreemap(data);
+  drawPareto(data);
+
+  document.querySelectorAll(".pill[data-mode]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      document.querySelectorAll(".pill[data-mode]").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      drawTop10(data, b.dataset.mode);
+    });
+  });
+});
+
+/* ----- MAPA ----- */
+function drawMap(data, geo){
+  const byUf = Object.fromEntries(data.estados.map(e=>[e.uf, e]));
+  const max = d3.max(data.estados, d=>d.revendedores);
+  const color = d3.scaleSequential().domain([0, max]).interpolator(t=>{
+    // branco -> pink
+    return d3.interpolate("#fdeaf2", PINK)(Math.sqrt(t));
+  });
+
+  const w = 560, h = 560;
+  const svg = d3.select("#map").append("svg").attr("viewBox", `0 0 ${w} ${h}`);
+  const proj = d3.geoMercator().fitSize([w, h], geo);
+  const path = d3.geoPath(proj);
+
+  svg.append("g").selectAll("path").data(geo.features).join("path")
+    .attr("d", path)
+    .attr("fill", f => {
+      const e = byUf[f.properties.sigla];
+      return e ? color(e.revendedores) : "#f3f3f3";
+    })
+    .attr("stroke", "#fff").attr("stroke-width", 0.8)
+    .on("mousemove", (ev,f)=>{
+      const e = byUf[f.properties.sigla];
+      const html = e
+        ? `<strong>${f.properties.name} (${e.uf})</strong><br>${fmt(e.revendedores)} revendedores<br><span class="muted">${fmt(e.municipios)} municípios · ${fmtPct(e.pct)}</span>`
+        : `<strong>${f.properties.name}</strong><br><span class="muted">sem dados</span>`;
+      showTip(html, ev);
+    })
+    .on("mouseleave", hideTip);
+
+  // sigla
+  svg.append("g").selectAll("text").data(geo.features).join("text")
+    .attr("x", f=>path.centroid(f)[0])
+    .attr("y", f=>path.centroid(f)[1])
+    .attr("text-anchor","middle")
+    .attr("font-size",10).attr("font-weight",600)
+    .attr("fill", f=>{
+      const e = byUf[f.properties.sigla];
+      return (e && e.revendedores/max > 0.35) ? "#fff" : "#333";
+    })
+    .attr("pointer-events","none")
+    .text(f=>f.properties.sigla);
+
+  // legenda
+  const scale = document.getElementById("legend-scale");
+  for(let i=0;i<20;i++){
+    const s = document.createElement("span");
+    s.style.background = color(max * (i/19));
+    scale.appendChild(s);
+  }
+}
+
+/* ----- TOP 10 ----- */
+function drawTop10(data, mode){
+  let lista = data.cidades;
+  if(mode === "capital") lista = lista.filter(c=>c.capital);
+  if(mode === "interior") lista = lista.filter(c=>!c.capital);
+  lista = lista.slice(0,10);
+  const max = d3.max(lista, d=>d.revendedores) || 1;
+  const cont = document.getElementById("top10");
+  cont.innerHTML = "";
+  lista.forEach(c=>{
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML = `
+      <div class="name">${formatCidade(c.municipio)}<span class="uf">${c.estado}</span></div>
+      <div class="bar"><div class="fill" style="width:${(c.revendedores/max*100).toFixed(1)}%"></div></div>
+      <div class="num">${fmt(c.revendedores)}</div>`;
+    row.addEventListener("mousemove", ev=>showTip(`<strong>${formatCidade(c.municipio)} (${c.estado})</strong><br>${fmt(c.revendedores)} revendedores<br><span class="muted">${fmtPct(c.pct)} do total</span>`, ev));
+    row.addEventListener("mouseleave", hideTip);
+    cont.appendChild(row);
+  });
+}
+function formatCidade(s){
+  if(!s) return "—";
+  return s.toLowerCase().replace(/(^|\s|-)([a-záéíóúâêôãõç])/g, (_,p,c)=>p+c.toUpperCase());
+}
+
+/* ----- TREEMAP ----- */
+function drawTreemap(data){
+  const w = 720, h = 360;
+  const svg = d3.select("#treemap").append("svg").attr("viewBox",`0 0 ${w} ${h}`);
+  // agrupa estados pequenos em "Outros"
+  const total = d3.sum(data.estados, e=>e.revendedores);
+  const big = [], small = [];
+  data.estados.forEach(e=>{
+    if(e.revendedores/total >= 0.015) big.push(e); else small.push(e);
+  });
+  const items = big.slice();
+  if(small.length){
+    items.push({uf:"+", nome:`Outros (${small.length} estados)`, revendedores: d3.sum(small,s=>s.revendedores), pct: d3.sum(small,s=>s.pct), municipios: d3.sum(small,s=>s.municipios)});
+  }
+  const root = d3.hierarchy({children: items}).sum(d=>d.revendedores).sort((a,b)=>b.value-a.value);
+  d3.treemap().size([w,h]).padding(2)(root);
+  const max = d3.max(items, d=>d.revendedores);
+  const color = d3.scaleSequential().domain([0,max]).interpolator(t=>d3.interpolate("#fdeaf2", PINK)(Math.sqrt(t)));
+
+  const g = svg.selectAll("g").data(root.leaves()).join("g")
+    .attr("transform", d=>`translate(${d.x0},${d.y0})`);
+  g.append("rect")
+    .attr("width", d=>d.x1-d.x0).attr("height", d=>d.y1-d.y0)
+    .attr("fill", d=>color(d.data.revendedores))
+    .attr("stroke","#fff")
+    .on("mousemove",(ev,d)=>showTip(`<strong>${d.data.nome}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${fmtPct(d.data.revendedores/total)} · ${fmt(d.data.municipios)} municípios</span>`, ev))
+    .on("mouseleave", hideTip);
+  g.append("text")
+    .attr("x",8).attr("y",18)
+    .attr("font-size",13).attr("font-weight",700)
+    .attr("fill", d=>(d.data.revendedores/max>0.35)?"#fff":"#0a0a0a")
+    .text(d=>{
+      const w = d.x1-d.x0;
+      if(w<40) return "";
+      return d.data.uf==="+"?"Outros":d.data.uf;
+    });
+  g.append("text")
+    .attr("x",8).attr("y",34)
+    .attr("font-size",11)
+    .attr("fill", d=>(d.data.revendedores/max>0.35)?"#ffe4ef":"#6b6b6b")
+    .text(d=>{
+      const w = d.x1-d.x0;
+      if(w<60) return "";
+      return fmt(d.data.revendedores);
+    });
+}
+
+/* ----- PARETO ----- */
+function drawPareto(data){
+  const w = 560, h = 320;
+  const margin = {top:14,right:46,bottom:32,left:46};
+  const innerW = w-margin.left-margin.right, innerH = h-margin.top-margin.bottom;
+  const svg = d3.select("#pareto").append("svg").attr("viewBox",`0 0 ${w} ${h}`);
+  const g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+  // top 50 + linha acumulada sobre todas
+  const sorted = data.cidades.slice().sort((a,b)=>b.revendedores-a.revendedores);
+  const total = d3.sum(sorted, d=>d.revendedores);
+  let acc = 0;
+  const cum = sorted.map((d,i)=>{ acc += d.revendedores; return { i:i+1, pct: acc/total }; });
+
+  const N = 50;
+  const top = sorted.slice(0,N);
+  const x = d3.scaleBand().domain(d3.range(N)).range([0,innerW]).padding(0.15);
+  const y = d3.scaleLinear().domain([0, d3.max(top,d=>d.revendedores)]).range([innerH,0]);
+  const xLine = d3.scaleLinear().domain([1, sorted.length]).range([0, innerW]);
+  const yPct = d3.scaleLinear().domain([0,1]).range([innerH,0]);
+
+  g.append("g").selectAll("rect").data(top).join("rect")
+    .attr("x",(d,i)=>x(i)).attr("y",d=>y(d.revendedores))
+    .attr("width",x.bandwidth()).attr("height",d=>innerH-y(d.revendedores))
+    .attr("fill",PINK)
+    .on("mousemove",(ev,d)=>showTip(`<strong>${formatCidade(d.municipio)} (${d.estado})</strong><br>${fmt(d.revendedores)} revendedores`, ev))
+    .on("mouseleave", hideTip);
+
+  // linha acumulada
+  const line = d3.line().x(d=>xLine(d.i)).y(d=>yPct(d.pct));
+  g.append("path").datum(cum).attr("fill","none").attr("stroke","#0a0a0a").attr("stroke-width",1.6).attr("d",line);
+
+  // 80% reference
+  g.append("line").attr("x1",0).attr("x2",innerW).attr("y1",yPct(0.8)).attr("y2",yPct(0.8))
+    .attr("stroke","#0a0a0a").attr("stroke-dasharray","3 3").attr("opacity",0.4);
+  g.append("text").attr("x",innerW).attr("y",yPct(0.8)-4).attr("text-anchor","end").attr("font-size",10).attr("fill","#6b6b6b").text("80%");
+
+  // eixos
+  g.append("g").attr("transform",`translate(0,${innerH})`)
+    .call(d3.axisBottom(xLine).ticks(6).tickFormat(d=>fmt(d)))
+    .selectAll("text").attr("font-size",10).attr("fill","#6b6b6b");
+  g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat(d=>fmt(d)))
+    .selectAll("text").attr("font-size",10).attr("fill","#6b6b6b");
+  g.append("g").attr("transform",`translate(${innerW},0)`)
+    .call(d3.axisRight(yPct).ticks(5).tickFormat(d=>(d*100).toFixed(0)+"%"))
+    .selectAll("text").attr("font-size",10).attr("fill","#6b6b6b");
+
+  // insight 80/20
+  const idx80 = cum.findIndex(c=>c.pct>=0.8) + 1;
+  const pctCidades = (idx80/sorted.length*100).toFixed(1).replace(".",",");
+  document.getElementById("pareto-insight").innerHTML =
+    `<strong>${fmt(idx80)} cidades</strong> (${pctCidades}% do total) concentram <strong>80%</strong> dos revendedores ativos.`;
+}
+</script>
+</body>
+</html>
