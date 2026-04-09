@@ -19,19 +19,28 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.45}
   a{color:var(--pink);text-decoration:none}
-  header{padding:28px 32px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
-  header h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-0.01em}
-  header .sub{color:var(--muted);font-size:13px;margin-top:4px}
-  header .brand{display:flex;align-items:center;gap:12px}
-  header .dot{width:12px;height:12px;border-radius:3px;background:var(--pink)}
-  main{padding:24px 32px 64px;max-width:1400px;margin:0 auto}
+
+  header{padding:32px 32px 18px;border-bottom:1px solid var(--line);text-align:center;position:relative}
+  header h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-0.01em}
+  header .sub{color:var(--muted);font-size:13px;margin-top:6px}
+  header .brand-dot{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--pink);vertical-align:middle;margin-right:8px}
+  header .updated{position:absolute;right:32px;top:38px;color:var(--muted);font-size:12px}
+
+  .filter-bar{max-width:1400px;margin:0 auto;padding:14px 32px 0;display:flex;align-items:center;gap:10px;min-height:36px}
+  .filter-bar .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
+  .filter-bar .badge{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600}
+  .filter-bar .badge button{background:none;border:none;color:#fff;cursor:pointer;font-size:14px;padding:0;line-height:1;font-family:inherit}
+  .filter-bar .hint{font-size:12px;color:var(--muted)}
+
+  main{padding:14px 32px 64px;max-width:1400px;margin:0 auto}
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
   .kpi{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:#fff}
   .kpi .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
-  .kpi .value{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-0.02em}
+  .kpi .value{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
   .kpi .hint{font-size:12px;color:var(--muted);margin-top:4px}
   .kpi.accent{background:var(--pink);color:#fff;border-color:var(--pink)}
   .kpi.accent .label,.kpi.accent .hint{color:#ffe4ef}
+
   .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
   .card{border:1px solid var(--line);border-radius:12px;padding:20px;background:#fff;min-height:0}
   .card h2{font-size:14px;font-weight:600;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.04em}
@@ -40,64 +49,84 @@
   .pill{font-size:11px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink);font-family:inherit;font-weight:500}
   .pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
   .pill:hover:not(.active){background:#f5f5f5}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+
   .row3{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-top:20px}
+
   svg{display:block;width:100%;height:auto;font-family:inherit}
-  .bar-row{display:flex;align-items:center;gap:10px;font-size:13px;margin:6px 0}
+  #map svg path, #treemap svg rect{cursor:pointer;transition:opacity .15s, stroke-width .15s}
+  #map .uf-shape:hover, #treemap rect:hover{stroke:#0a0a0a;stroke-width:1.5}
+
+  .bar-row{display:flex;align-items:center;gap:10px;font-size:13px;margin:6px 0;cursor:pointer;border-radius:6px;padding:2px 4px}
+  .bar-row:hover{background:#fafafa}
+  .bar-row.selected{background:#fdeaf2}
   .bar-row .name{flex:0 0 150px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .bar-row .uf{color:var(--muted);font-size:11px;margin-left:4px}
   .bar-row .bar{flex:1;height:18px;background:var(--pink-soft);border-radius:4px;position:relative;overflow:hidden}
   .bar-row .fill{height:100%;background:var(--pink);border-radius:4px}
   .bar-row .num{flex:0 0 80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-  .quality{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+
+  .conc-row{display:grid;grid-template-columns:80px 1fr 90px;gap:12px;align-items:center;margin:12px 0}
+  .conc-row .conc-label{font-size:13px;font-weight:600}
+  .conc-row .conc-sub{font-size:11px;color:var(--muted);font-weight:400}
+  .conc-row .conc-bar{height:22px;background:var(--pink-soft);border-radius:4px;overflow:hidden;position:relative}
+  .conc-row .conc-fill{height:100%;background:var(--pink);border-radius:4px;display:flex;align-items:center;padding-left:8px;color:#fff;font-size:11px;font-weight:600;transition:width .35s ease}
+  .conc-row .conc-num{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600}
+  .conc-row .conc-num .conc-pct{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  #conc-insight{font-size:12px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+
+  .quality{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:20px}
   .qcard{border:1px dashed #d9d9d9;border-radius:12px;padding:16px 18px;background:#fafafa}
   .qcard .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
-  .qcard .value{font-size:22px;font-weight:800;margin-top:4px}
+  .qcard .value{font-size:22px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
   .qcard .hint{font-size:12px;color:var(--muted);margin-top:6px}
+
   .legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:8px}
   .legend .scale{display:flex;height:8px;border-radius:4px;overflow:hidden;flex:1;max-width:240px}
   .legend .scale span{flex:1}
   .tooltip{position:fixed;pointer-events:none;background:#0a0a0a;color:#fff;padding:8px 10px;border-radius:6px;font-size:12px;z-index:10;opacity:0;transition:opacity .12s;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.18)}
   .tooltip strong{color:#fff}
   .tooltip .muted{color:#b5b5b5;font-size:11px}
+
   footer{margin-top:48px;padding:20px 32px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center}
   @media (max-width:980px){
     .kpis{grid-template-columns:repeat(2,1fr)}
-    .grid,.row2,.row3,.quality{grid-template-columns:1fr}
-    main{padding:16px}
-    header{padding:20px 16px 12px}
+    .grid,.row3,.quality{grid-template-columns:1fr}
+    main{padding:14px 16px 60px}
+    header{padding:24px 16px 14px}
+    header .updated{position:static;display:block;margin-top:6px}
+    .filter-bar{padding:12px 16px 0}
   }
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">
-    <div class="dot"></div>
-    <div>
-      <h1>ABIV — Revendedores Ativos por Município</h1>
-      <div class="sub">Associação Brasileira da Indústria do Vestuário · Base 2025 (Tailor Jan–Dez)</div>
-    </div>
-  </div>
-  <div class="sub">Atualizado em <span id="updated">—</span></div>
+  <h1><span class="brand-dot"></span>ABIV — Revendedores Ativos por Município</h1>
+  <div class="sub">Associação Brasileira da Indústria do Vestuário · Base 2025 (Tailor Jan–Dez)</div>
+  <div class="updated">Atualizado em <span id="updated">—</span></div>
 </header>
+
+<div class="filter-bar">
+  <span class="label">Filtro:</span>
+  <span id="filter-display"><span class="hint">clique em qualquer elemento do dashboard para filtrar</span></span>
+</div>
 
 <main>
   <!-- KPIs -->
   <section class="kpis">
     <div class="kpi accent">
-      <div class="label">Revendedores ativos</div>
+      <div class="label" id="kpi-total-label">Revendedores ativos</div>
       <div class="value" id="kpi-total">—</div>
-      <div class="hint">Clientes únicos (CPF/CNPJ)</div>
+      <div class="hint" id="kpi-total-hint">Clientes únicos (CPF/CNPJ)</div>
     </div>
     <div class="kpi">
       <div class="label">Capilaridade</div>
       <div class="value" id="kpi-cap">—</div>
-      <div class="hint">Municípios com ≥ 1 revendedor</div>
+      <div class="hint" id="kpi-cap-hint">Municípios com ≥ 1 revendedor</div>
     </div>
     <div class="kpi">
-      <div class="label">Estados cobertos</div>
-      <div class="value" id="kpi-uf">—</div>
-      <div class="hint">UFs do Brasil com presença</div>
+      <div class="label" id="kpi-3-label">Estados cobertos</div>
+      <div class="value" id="kpi-3">—</div>
+      <div class="hint" id="kpi-3-hint">UFs do Brasil com presença</div>
     </div>
     <div class="kpi">
       <div class="label">Média por município</div>
@@ -110,7 +139,7 @@
   <section class="grid">
     <div class="card">
       <h2>Mapa do Brasil</h2>
-      <p class="desc">Densidade de revendedores por estado. Passe o mouse para ver detalhes.</p>
+      <p class="desc">Densidade de revendedores por estado. <strong>Clique</strong> em uma UF para filtrar tudo.</p>
       <div id="map"></div>
       <div class="legend">
         <span>menos</span>
@@ -125,30 +154,30 @@
         <button class="pill" data-mode="interior">Interior</button>
       </div>
       <h2>Top 10 cidades</h2>
-      <p class="desc">Ranking por número de revendedores únicos.</p>
+      <p class="desc"><strong>Clique</strong> em uma cidade para filtrar.</p>
       <div id="top10"></div>
     </div>
   </section>
 
-  <!-- Treemap + Pareto -->
+  <!-- Treemap + Concentração -->
   <section class="row3">
     <div class="card">
-      <h2>Treemap de estados</h2>
-      <p class="desc">Cada retângulo é proporcional ao volume de revendedores do estado.</p>
+      <h2 id="treemap-title">Treemap de estados</h2>
+      <p class="desc">Cada retângulo é proporcional ao volume de revendedores. <strong>Clique</strong> para filtrar.</p>
       <div id="treemap"></div>
     </div>
     <div class="card">
-      <h2>Pareto · 80/20</h2>
-      <p class="desc">Curva acumulada de cidades ordenadas por volume.</p>
-      <div id="pareto"></div>
-      <div class="desc" id="pareto-insight" style="margin-top:10px"></div>
+      <h2 id="conc-title">Concentração de clientes</h2>
+      <p class="desc">Quantos % do total estão nas N maiores cidades.</p>
+      <div id="conc"></div>
+      <div id="conc-insight"></div>
     </div>
   </section>
 
   <!-- Qualidade de dados -->
   <section class="card" style="margin-top:20px">
     <h2>Qualidade de dados</h2>
-    <p class="desc">Clientes que ficam fora do ranking de cidades por terem cadastro incompleto ou serem do exterior. Precisam de atualização cadastral.</p>
+    <p class="desc">Cadastros fora do ranking de cidades. UFs digitadas erradas foram automaticamente corrigidas pelo cruzamento com a base oficial do IBGE.</p>
     <div class="quality">
       <div class="qcard">
         <div class="label">Sem cidade cadastrada</div>
@@ -159,6 +188,11 @@
         <div class="label">Exterior</div>
         <div class="value" id="q-ex">—</div>
         <div class="hint" id="q-ex-hint">—</div>
+      </div>
+      <div class="qcard">
+        <div class="label">UFs corrigidas</div>
+        <div class="value" id="q-fix">—</div>
+        <div class="hint" id="q-fix-hint">—</div>
       </div>
     </div>
   </section>
@@ -172,7 +206,7 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script>
 const PINK = "#e02d7d";
-const fmt = n => n.toLocaleString("pt-BR");
+const fmt = n => Math.round(n).toLocaleString("pt-BR");
 const fmtPct = n => (n*100).toFixed(1).replace(".",",")+"%";
 
 const tt = document.getElementById("tt");
@@ -181,7 +215,6 @@ function showTip(html, ev){
   tt.style.opacity = 1;
   const pad = 12;
   let x = ev.clientX + pad, y = ev.clientY + pad;
-  // mantém na tela
   requestAnimationFrame(()=>{
     const r = tt.getBoundingClientRect();
     if(x + r.width > window.innerWidth) x = ev.clientX - r.width - pad;
@@ -191,61 +224,160 @@ function showTip(html, ev){
 }
 function hideTip(){ tt.style.opacity = 0; }
 
+function formatCidade(s){
+  if(!s) return "—";
+  return s.toLowerCase().replace(/(^|\s|-)([a-záéíóúâêôãõç])/g, (_,p,c)=>p+c.toUpperCase());
+}
+
+/* ===== STATE ===== */
+const state = {
+  data: null,
+  geo: null,
+  filter: { uf: null, city: null },   // city implica uf
+  top10mode: "all",
+};
+
 Promise.all([
   fetch("data.json").then(r=>r.json()),
   fetch("brazil-states.geojson").then(r=>r.json()),
 ]).then(([data, geo])=>{
+  state.data = data;
+  state.geo = geo;
   document.getElementById("updated").textContent = data.geradoEm;
 
-  // KPIs
-  document.getElementById("kpi-total").textContent = fmt(data.totais.validos);
-  document.getElementById("kpi-cap").textContent = fmt(data.totais.municipios);
-  document.getElementById("kpi-uf").textContent = data.totais.estados;
-  document.getElementById("kpi-avg").textContent = fmt(Math.round(data.totais.validos / data.totais.municipios));
-
-  // Qualidade
+  // Qualidade (não muda com filtro)
   document.getElementById("q-sem").textContent = fmt(data.totais.semCidade);
   document.getElementById("q-sem-hint").textContent = `${data.semCidade.length} registro(s) sem município informado`;
   document.getElementById("q-ex").textContent = fmt(data.totais.exterior);
-  document.getElementById("q-ex-hint").textContent = `${data.exterior.length} localidade(s) fora do Brasil (${[...new Set(data.exterior.map(e=>e.estado||"--"))].join(", ")})`;
+  const ufsEx = [...new Set(data.exterior.map(e=>e.estado||"--"))].slice(0,8).join(", ");
+  document.getElementById("q-ex-hint").textContent = `${data.exterior.length} localidade(s) fora do Brasil`;
+  document.getElementById("q-fix").textContent = fmt(data.totais.correcoes);
+  document.getElementById("q-fix-hint").textContent = `${fmt(data.totais.revCorrigidos)} revendedor(es) reclassificado(s) via IBGE`;
 
-  drawMap(data, geo);
-  drawTop10(data, "all");
-  drawTreemap(data);
-  drawPareto(data);
+  // Inicializa charts
+  initMap();
+  initLegend();
+  render();
 
+  // Filtros do top10
   document.querySelectorAll(".pill[data-mode]").forEach(b=>{
     b.addEventListener("click", ()=>{
       document.querySelectorAll(".pill[data-mode]").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
-      drawTop10(data, b.dataset.mode);
+      state.top10mode = b.dataset.mode;
+      renderTop10();
     });
   });
 });
 
+/* ===== FILTER HELPERS ===== */
+function setFilterUF(uf){
+  if(state.filter.uf === uf && !state.filter.city){
+    clearFilter();
+  } else {
+    state.filter = { uf, city: null };
+    render();
+  }
+}
+function setFilterCity(city, uf){
+  if(state.filter.city === city){
+    clearFilter();
+  } else {
+    state.filter = { uf, city };
+    render();
+  }
+}
+function clearFilter(){
+  state.filter = { uf: null, city: null };
+  render();
+}
+
+function filteredCities(){
+  const { uf, city } = state.filter;
+  let list = state.data.cidades;
+  if(uf) list = list.filter(c=>c.estado===uf);
+  if(city) list = list.filter(c=>c.municipio===city);
+  return list;
+}
+
+/* ===== RENDER ===== */
+function render(){
+  renderFilterBar();
+  renderKPIs();
+  renderMap();
+  renderTop10();
+  renderTreemap();
+  renderConcentration();
+}
+
+function renderFilterBar(){
+  const el = document.getElementById("filter-display");
+  const { uf, city } = state.filter;
+  if(!uf && !city){
+    el.innerHTML = `<span class="hint">clique em qualquer elemento do dashboard para filtrar</span>`;
+    return;
+  }
+  let label = "";
+  if(city) label = `${formatCidade(city)} · ${uf}`;
+  else label = `${state.data.estados.find(e=>e.uf===uf)?.nome || uf} (${uf})`;
+  el.innerHTML = `<span class="badge">${label} <button onclick="clearFilter()" title="Limpar filtro">×</button></span>`;
+}
+
+function renderKPIs(){
+  const list = filteredCities();
+  const total = d3.sum(list, d=>d.revendedores);
+  const muni = list.length;
+  const ufs = new Set(list.map(c=>c.estado)).size;
+  const { uf, city } = state.filter;
+
+  document.getElementById("kpi-total").textContent = fmt(total);
+  document.getElementById("kpi-cap").textContent = fmt(muni);
+  document.getElementById("kpi-avg").textContent = muni ? fmt(Math.round(total/muni)) : "—";
+
+  // Adapta labels conforme filtro
+  if(city){
+    document.getElementById("kpi-total-label").textContent = "Revendedores na cidade";
+    document.getElementById("kpi-total-hint").textContent = `${formatCidade(city)} (${uf})`;
+    document.getElementById("kpi-cap-hint").textContent = "Cidade selecionada";
+    document.getElementById("kpi-3-label").textContent = "% do Brasil";
+    document.getElementById("kpi-3").textContent = fmtPct(total / state.data.totais.validos);
+    document.getElementById("kpi-3-hint").textContent = "Participação no total nacional";
+  } else if(uf){
+    document.getElementById("kpi-total-label").textContent = "Revendedores no estado";
+    document.getElementById("kpi-total-hint").textContent = `${state.data.estados.find(e=>e.uf===uf)?.nome} (${uf})`;
+    document.getElementById("kpi-cap-hint").textContent = "Municípios do estado";
+    document.getElementById("kpi-3-label").textContent = "% do Brasil";
+    document.getElementById("kpi-3").textContent = fmtPct(total / state.data.totais.validos);
+    document.getElementById("kpi-3-hint").textContent = "Participação no total nacional";
+  } else {
+    document.getElementById("kpi-total-label").textContent = "Revendedores ativos";
+    document.getElementById("kpi-total-hint").textContent = "Clientes únicos (CPF/CNPJ)";
+    document.getElementById("kpi-cap-hint").textContent = "Municípios com ≥ 1 revendedor";
+    document.getElementById("kpi-3-label").textContent = "Estados cobertos";
+    document.getElementById("kpi-3").textContent = ufs;
+    document.getElementById("kpi-3-hint").textContent = "UFs do Brasil com presença";
+  }
+}
+
 /* ----- MAPA ----- */
-function drawMap(data, geo){
-  const byUf = Object.fromEntries(data.estados.map(e=>[e.uf, e]));
-  const max = d3.max(data.estados, d=>d.revendedores);
-  const color = d3.scaleSequential().domain([0, max]).interpolator(t=>{
-    // branco -> pink
-    return d3.interpolate("#fdeaf2", PINK)(Math.sqrt(t));
-  });
+let mapColor;
+function initMap(){
+  const max = d3.max(state.data.estados, d=>d.revendedores);
+  mapColor = d3.scaleSequential().domain([0, max]).interpolator(t=>d3.interpolate("#fdeaf2", PINK)(Math.sqrt(t)));
 
   const w = 560, h = 560;
-  const svg = d3.select("#map").append("svg").attr("viewBox", `0 0 ${w} ${h}`);
-  const proj = d3.geoMercator().fitSize([w, h], geo);
+  const svg = d3.select("#map").append("svg").attr("viewBox", `0 0 ${w} ${h}`).attr("id","mapsvg");
+  const proj = d3.geoMercator().fitSize([w, h], state.geo);
   const path = d3.geoPath(proj);
 
-  svg.append("g").selectAll("path").data(geo.features).join("path")
+  svg.append("g").attr("class","shapes").selectAll("path").data(state.geo.features).join("path")
+    .attr("class","uf-shape")
     .attr("d", path)
-    .attr("fill", f => {
-      const e = byUf[f.properties.sigla];
-      return e ? color(e.revendedores) : "#f3f3f3";
-    })
+    .attr("data-uf", f=>f.properties.sigla)
     .attr("stroke", "#fff").attr("stroke-width", 0.8)
+    .on("click", (ev,f)=>setFilterUF(f.properties.sigla))
     .on("mousemove", (ev,f)=>{
-      const e = byUf[f.properties.sigla];
+      const e = state.data.estados.find(x=>x.uf===f.properties.sigla);
       const html = e
         ? `<strong>${f.properties.name} (${e.uf})</strong><br>${fmt(e.revendedores)} revendedores<br><span class="muted">${fmt(e.municipios)} municípios · ${fmtPct(e.pct)}</span>`
         : `<strong>${f.properties.name}</strong><br><span class="muted">sem dados</span>`;
@@ -253,69 +385,120 @@ function drawMap(data, geo){
     })
     .on("mouseleave", hideTip);
 
-  // sigla
-  svg.append("g").selectAll("text").data(geo.features).join("text")
+  svg.append("g").attr("class","labels").selectAll("text").data(state.geo.features).join("text")
     .attr("x", f=>path.centroid(f)[0])
     .attr("y", f=>path.centroid(f)[1])
     .attr("text-anchor","middle")
     .attr("font-size",10).attr("font-weight",600)
-    .attr("fill", f=>{
-      const e = byUf[f.properties.sigla];
-      return (e && e.revendedores/max > 0.35) ? "#fff" : "#333";
-    })
     .attr("pointer-events","none")
+    .attr("data-uf", f=>f.properties.sigla)
     .text(f=>f.properties.sigla);
+}
 
-  // legenda
+function renderMap(){
+  const max = d3.max(state.data.estados, d=>d.revendedores);
+  const { uf } = state.filter;
+  d3.select("#mapsvg").selectAll(".uf-shape")
+    .attr("fill", function(){
+      const sigla = this.getAttribute("data-uf");
+      const e = state.data.estados.find(x=>x.uf===sigla);
+      return e ? mapColor(e.revendedores) : "#f3f3f3";
+    })
+    .attr("opacity", function(){
+      const sigla = this.getAttribute("data-uf");
+      if(!uf) return 1;
+      return sigla===uf ? 1 : 0.18;
+    })
+    .attr("stroke", function(){
+      return this.getAttribute("data-uf")===uf ? "#0a0a0a" : "#fff";
+    })
+    .attr("stroke-width", function(){
+      return this.getAttribute("data-uf")===uf ? 2 : 0.8;
+    });
+  d3.select("#mapsvg").selectAll(".labels text")
+    .attr("opacity", function(){
+      const sigla = this.getAttribute("data-uf");
+      if(!uf) return 1;
+      return sigla===uf ? 1 : 0.25;
+    })
+    .attr("fill", function(){
+      const sigla = this.getAttribute("data-uf");
+      const e = state.data.estados.find(x=>x.uf===sigla);
+      return (e && e.revendedores/max > 0.35) ? "#fff" : "#333";
+    });
+}
+
+function initLegend(){
+  const max = d3.max(state.data.estados, d=>d.revendedores);
   const scale = document.getElementById("legend-scale");
+  scale.innerHTML = "";
   for(let i=0;i<20;i++){
     const s = document.createElement("span");
-    s.style.background = color(max * (i/19));
+    s.style.background = mapColor(max * (i/19));
     scale.appendChild(s);
   }
 }
 
 /* ----- TOP 10 ----- */
-function drawTop10(data, mode){
-  let lista = data.cidades;
-  if(mode === "capital") lista = lista.filter(c=>c.capital);
-  if(mode === "interior") lista = lista.filter(c=>!c.capital);
+function renderTop10(){
+  let lista = filteredCities();
+  if(state.top10mode === "capital") lista = lista.filter(c=>c.capital);
+  if(state.top10mode === "interior") lista = lista.filter(c=>!c.capital);
   lista = lista.slice(0,10);
   const max = d3.max(lista, d=>d.revendedores) || 1;
   const cont = document.getElementById("top10");
   cont.innerHTML = "";
+  if(!lista.length){
+    cont.innerHTML = `<div class="hint" style="color:var(--muted);font-size:13px;padding:20px 0">Nenhuma cidade no recorte atual.</div>`;
+    return;
+  }
   lista.forEach(c=>{
     const row = document.createElement("div");
-    row.className = "bar-row";
+    row.className = "bar-row" + (state.filter.city===c.municipio ? " selected" : "");
     row.innerHTML = `
       <div class="name">${formatCidade(c.municipio)}<span class="uf">${c.estado}</span></div>
       <div class="bar"><div class="fill" style="width:${(c.revendedores/max*100).toFixed(1)}%"></div></div>
       <div class="num">${fmt(c.revendedores)}</div>`;
-    row.addEventListener("mousemove", ev=>showTip(`<strong>${formatCidade(c.municipio)} (${c.estado})</strong><br>${fmt(c.revendedores)} revendedores<br><span class="muted">${fmtPct(c.pct)} do total</span>`, ev));
+    row.addEventListener("click", ()=>setFilterCity(c.municipio, c.estado));
+    row.addEventListener("mousemove", ev=>showTip(`<strong>${formatCidade(c.municipio)} (${c.estado})</strong><br>${fmt(c.revendedores)} revendedores<br><span class="muted">${fmtPct(c.pct)} do Brasil</span>`, ev));
     row.addEventListener("mouseleave", hideTip);
     cont.appendChild(row);
   });
 }
-function formatCidade(s){
-  if(!s) return "—";
-  return s.toLowerCase().replace(/(^|\s|-)([a-záéíóúâêôãõç])/g, (_,p,c)=>p+c.toUpperCase());
-}
 
 /* ----- TREEMAP ----- */
-function drawTreemap(data){
+function renderTreemap(){
   const w = 720, h = 360;
-  const svg = d3.select("#treemap").append("svg").attr("viewBox",`0 0 ${w} ${h}`);
-  // agrupa estados pequenos em "Outros"
-  const total = d3.sum(data.estados, e=>e.revendedores);
-  const big = [], small = [];
-  data.estados.forEach(e=>{
-    if(e.revendedores/total >= 0.015) big.push(e); else small.push(e);
-  });
-  const items = big.slice();
-  if(small.length){
-    items.push({uf:"+", nome:`Outros (${small.length} estados)`, revendedores: d3.sum(small,s=>s.revendedores), pct: d3.sum(small,s=>s.pct), municipios: d3.sum(small,s=>s.municipios)});
+  const cont = d3.select("#treemap");
+  cont.selectAll("*").remove();
+  const svg = cont.append("svg").attr("viewBox",`0 0 ${w} ${h}`);
+
+  const { uf } = state.filter;
+  let items, title, totalRef;
+
+  if(uf){
+    // dentro do estado: top municípios
+    const cidades = filteredCities().slice(0,30);
+    items = cidades.map(c=>({key:c.municipio, label:formatCidade(c.municipio), revendedores:c.revendedores, kind:"city"}));
+    totalRef = d3.sum(filteredCities(), d=>d.revendedores);
+    title = `Top municípios — ${uf}`;
+  } else {
+    // estados, com agrupamento de pequenos
+    const total = d3.sum(state.data.estados, e=>e.revendedores);
+    const big = [], small = [];
+    state.data.estados.forEach(e=>{
+      if(e.revendedores/total >= 0.015) big.push(e); else small.push(e);
+    });
+    items = big.map(e=>({key:e.uf, label:e.uf, nome:e.nome, revendedores:e.revendedores, municipios:e.municipios, kind:"state"}));
+    if(small.length){
+      items.push({key:"__outros__", label:"Outros", nome:`Outros (${small.length} estados)`, revendedores:d3.sum(small,s=>s.revendedores), municipios:d3.sum(small,s=>s.municipios), kind:"state-group", small});
+    }
+    totalRef = total;
+    title = "Treemap de estados";
   }
-  const root = d3.hierarchy({children: items}).sum(d=>d.revendedores).sort((a,b)=>b.value-a.value);
+  document.getElementById("treemap-title").textContent = title;
+
+  const root = d3.hierarchy({children:items}).sum(d=>d.revendedores).sort((a,b)=>b.value-a.value);
   d3.treemap().size([w,h]).padding(2)(root);
   const max = d3.max(items, d=>d.revendedores);
   const color = d3.scaleSequential().domain([0,max]).interpolator(t=>d3.interpolate("#fdeaf2", PINK)(Math.sqrt(t)));
@@ -326,21 +509,35 @@ function drawTreemap(data){
     .attr("width", d=>d.x1-d.x0).attr("height", d=>d.y1-d.y0)
     .attr("fill", d=>color(d.data.revendedores))
     .attr("stroke","#fff")
-    .on("mousemove",(ev,d)=>showTip(`<strong>${d.data.nome}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${fmtPct(d.data.revendedores/total)} · ${fmt(d.data.municipios)} municípios</span>`, ev))
+    .on("click",(ev,d)=>{
+      if(d.data.kind==="state") setFilterUF(d.data.key);
+      else if(d.data.kind==="city") setFilterCity(d.data.key, state.filter.uf);
+    })
+    .on("mousemove",(ev,d)=>{
+      const pct = fmtPct(d.data.revendedores/totalRef);
+      let html;
+      if(d.data.kind==="state") html = `<strong>${d.data.nome}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${pct} · ${fmt(d.data.municipios)} municípios</span>`;
+      else if(d.data.kind==="city") html = `<strong>${d.data.label}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${pct} do estado</span>`;
+      else html = `<strong>${d.data.nome}</strong><br>${fmt(d.data.revendedores)} revendedores<br><span class="muted">${pct}</span>`;
+      showTip(html, ev);
+    })
     .on("mouseleave", hideTip);
+
   g.append("text")
     .attr("x",8).attr("y",18)
     .attr("font-size",13).attr("font-weight",700)
     .attr("fill", d=>(d.data.revendedores/max>0.35)?"#fff":"#0a0a0a")
+    .attr("pointer-events","none")
     .text(d=>{
       const w = d.x1-d.x0;
       if(w<40) return "";
-      return d.data.uf==="+"?"Outros":d.data.uf;
+      return d.data.label;
     });
   g.append("text")
     .attr("x",8).attr("y",34)
     .attr("font-size",11)
     .attr("fill", d=>(d.data.revendedores/max>0.35)?"#ffe4ef":"#6b6b6b")
+    .attr("pointer-events","none")
     .text(d=>{
       const w = d.x1-d.x0;
       if(w<60) return "";
@@ -348,58 +545,60 @@ function drawTreemap(data){
     });
 }
 
-/* ----- PARETO ----- */
-function drawPareto(data){
-  const w = 560, h = 320;
-  const margin = {top:14,right:46,bottom:32,left:46};
-  const innerW = w-margin.left-margin.right, innerH = h-margin.top-margin.bottom;
-  const svg = d3.select("#pareto").append("svg").attr("viewBox",`0 0 ${w} ${h}`);
-  const g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+/* ----- CONCENTRAÇÃO ----- */
+function renderConcentration(){
+  const list = filteredCities().slice().sort((a,b)=>b.revendedores-a.revendedores);
+  const total = d3.sum(list, d=>d.revendedores);
+  const N = list.length;
 
-  // top 50 + linha acumulada sobre todas
-  const sorted = data.cidades.slice().sort((a,b)=>b.revendedores-a.revendedores);
-  const total = d3.sum(sorted, d=>d.revendedores);
-  let acc = 0;
-  const cum = sorted.map((d,i)=>{ acc += d.revendedores; return { i:i+1, pct: acc/total }; });
+  const cont = document.getElementById("conc");
+  cont.innerHTML = "";
 
-  const N = 50;
-  const top = sorted.slice(0,N);
-  const x = d3.scaleBand().domain(d3.range(N)).range([0,innerW]).padding(0.15);
-  const y = d3.scaleLinear().domain([0, d3.max(top,d=>d.revendedores)]).range([innerH,0]);
-  const xLine = d3.scaleLinear().domain([1, sorted.length]).range([0, innerW]);
-  const yPct = d3.scaleLinear().domain([0,1]).range([innerH,0]);
+  if(!N || !total){
+    cont.innerHTML = `<div class="hint" style="font-size:13px;padding:20px 0">Sem dados para o recorte atual.</div>`;
+    document.getElementById("conc-insight").textContent = "";
+    return;
+  }
 
-  g.append("g").selectAll("rect").data(top).join("rect")
-    .attr("x",(d,i)=>x(i)).attr("y",d=>y(d.revendedores))
-    .attr("width",x.bandwidth()).attr("height",d=>innerH-y(d.revendedores))
-    .attr("fill",PINK)
-    .on("mousemove",(ev,d)=>showTip(`<strong>${formatCidade(d.municipio)} (${d.estado})</strong><br>${fmt(d.revendedores)} revendedores`, ev))
-    .on("mouseleave", hideTip);
+  // buckets adaptativos
+  const buckets = [
+    { n:1, label:"Top 1" },
+    { n:10, label:"Top 10" },
+    { n:50, label:"Top 50" },
+    { n:100, label:"Top 100" },
+  ].filter(b=>b.n<=N);
+  if(N > 100) buckets.push({ n:N, label:"Total", isTotal:true });
 
-  // linha acumulada
-  const line = d3.line().x(d=>xLine(d.i)).y(d=>yPct(d.pct));
-  g.append("path").datum(cum).attr("fill","none").attr("stroke","#0a0a0a").attr("stroke-width",1.6).attr("d",line);
+  buckets.forEach(b=>{
+    const sum = d3.sum(list.slice(0,b.n), d=>d.revendedores);
+    const pct = sum/total;
+    const row = document.createElement("div");
+    row.className = "conc-row";
+    row.innerHTML = `
+      <div>
+        <div class="conc-label">${b.label}</div>
+        <div class="conc-sub">${fmt(b.n)} cidade${b.n>1?"s":""}</div>
+      </div>
+      <div class="conc-bar"><div class="conc-fill" style="width:${(pct*100).toFixed(1)}%">${pct>0.18?fmtPct(pct):""}</div></div>
+      <div class="conc-num">${fmt(sum)}<span class="conc-pct">${pct<=0.18?fmtPct(pct):"&nbsp;"}</span></div>`;
+    cont.appendChild(row);
+  });
 
-  // 80% reference
-  g.append("line").attr("x1",0).attr("x2",innerW).attr("y1",yPct(0.8)).attr("y2",yPct(0.8))
-    .attr("stroke","#0a0a0a").attr("stroke-dasharray","3 3").attr("opacity",0.4);
-  g.append("text").attr("x",innerW).attr("y",yPct(0.8)-4).attr("text-anchor","end").attr("font-size",10).attr("fill","#6b6b6b").text("80%");
-
-  // eixos
-  g.append("g").attr("transform",`translate(0,${innerH})`)
-    .call(d3.axisBottom(xLine).ticks(6).tickFormat(d=>fmt(d)))
-    .selectAll("text").attr("font-size",10).attr("fill","#6b6b6b");
-  g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat(d=>fmt(d)))
-    .selectAll("text").attr("font-size",10).attr("fill","#6b6b6b");
-  g.append("g").attr("transform",`translate(${innerW},0)`)
-    .call(d3.axisRight(yPct).ticks(5).tickFormat(d=>(d*100).toFixed(0)+"%"))
-    .selectAll("text").attr("font-size",10).attr("fill","#6b6b6b");
-
-  // insight 80/20
-  const idx80 = cum.findIndex(c=>c.pct>=0.8) + 1;
-  const pctCidades = (idx80/sorted.length*100).toFixed(1).replace(".",",");
-  document.getElementById("pareto-insight").innerHTML =
-    `<strong>${fmt(idx80)} cidades</strong> (${pctCidades}% do total) concentram <strong>80%</strong> dos revendedores ativos.`;
+  // Insight: quantas cidades = 80%
+  let acc = 0, idx80 = 0;
+  for(let i=0;i<list.length;i++){
+    acc += list[i].revendedores;
+    if(acc/total >= 0.8){ idx80 = i+1; break; }
+  }
+  const escopo = state.filter.uf ? state.filter.uf : "Brasil";
+  document.getElementById("conc-title").textContent = state.filter.uf ? `Concentração — ${state.filter.uf}` : "Concentração de clientes";
+  if(state.filter.city){
+    document.getElementById("conc-insight").innerHTML =
+      `<strong>${formatCidade(state.filter.city)}</strong> sozinha responde por <strong>${fmtPct(total/state.data.totais.validos)}</strong> dos revendedores ativos do Brasil.`;
+  } else {
+    document.getElementById("conc-insight").innerHTML =
+      `<strong>${fmt(idx80)} cidade${idx80>1?"s":""}</strong> (${(idx80/N*100).toFixed(1).replace(".",",")}% das cidades de ${escopo}) já concentram <strong>80%</strong> dos revendedores.`;
+  }
 }
 </script>
 </body>
