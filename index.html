@@ -74,7 +74,7 @@
   .conc-row .conc-num .conc-pct{display:block;font-size:11px;color:var(--muted);font-weight:500}
   #conc-insight{font-size:12px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
 
-  .quality{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:20px}
+  .quality{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
   .qcard{border:1px dashed #d9d9d9;border-radius:12px;padding:16px 18px;background:#fafafa}
   .qcard .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
   .qcard .value{font-size:22px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
@@ -90,7 +90,8 @@
   footer{margin-top:48px;padding:20px 32px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center}
   @media (max-width:980px){
     .kpis{grid-template-columns:repeat(2,1fr)}
-    .grid,.row3,.quality{grid-template-columns:1fr}
+    .grid,.row3{grid-template-columns:1fr}
+    .quality{grid-template-columns:1fr 1fr}
     main{padding:14px 16px 60px}
     header{padding:24px 16px 14px}
     header .updated{position:static;display:block;margin-top:6px}
@@ -185,6 +186,11 @@
         <div class="hint" id="q-sem-hint">—</div>
       </div>
       <div class="qcard">
+        <div class="label">Cadastro inválido</div>
+        <div class="value" id="q-inv">—</div>
+        <div class="hint" id="q-inv-hint">—</div>
+      </div>
+      <div class="qcard">
         <div class="label">Exterior</div>
         <div class="value" id="q-ex">—</div>
         <div class="hint" id="q-ex-hint">—</div>
@@ -247,10 +253,14 @@ Promise.all([
 
   // Qualidade (não muda com filtro)
   document.getElementById("q-sem").textContent = fmt(data.totais.semCidade);
-  document.getElementById("q-sem-hint").textContent = `${data.semCidade.length} registro(s) sem município informado`;
+  document.getElementById("q-sem-hint").textContent = `${data.semCidade.length} registro(s) com município em branco`;
+
+  document.getElementById("q-inv").textContent = fmt(data.totais.invalido);
+  document.getElementById("q-inv-hint").textContent = `${data.invalido.length} cadastro(s) sem cidade real (ex: "EXTERIOR", "EM TRANSITO", siglas no campo cidade)`;
+
   document.getElementById("q-ex").textContent = fmt(data.totais.exterior);
-  const ufsEx = [...new Set(data.exterior.map(e=>e.estado||"--"))].slice(0,8).join(", ");
-  document.getElementById("q-ex-hint").textContent = `${data.exterior.length} localidade(s) fora do Brasil`;
+  document.getElementById("q-ex-hint").textContent = `${data.exterior.length} localidade(s) realmente fora do Brasil`;
+
   document.getElementById("q-fix").textContent = fmt(data.totais.correcoes);
   document.getElementById("q-fix-hint").textContent = `${fmt(data.totais.revCorrigidos)} revendedor(es) reclassificado(s) via IBGE`;
 
